@@ -9,6 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r data_cleaning}
-readLines("data_cleaning.R")
+```{r data_cleaning, include=FALSE}
+source("data_cleaning.R")
 ```
