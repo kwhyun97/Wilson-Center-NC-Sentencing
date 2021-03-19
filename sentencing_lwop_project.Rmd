@@ -10,61 +10,17 @@ library(tidyverse)
 library(sf)
 library(janitor)
 library(ggiraph)
-knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r data_cleaning, include=FALSE}
-source("data_cleaning.R")
+sentencing <- readRDS("data/hxmisd9919_request.RDS")
 ```
 
 ```{r basic_helpers}
-basic_summary <- function(x){
-  x %>% 
-  mutate(race = case_when(
-    race == "A" ~ "Asian",
-    race == "B" ~ "Black",
-    race == "H" ~ "Hispanic",
-    race == "W" ~ "White",
-    TRUE ~ "Other"
-  ), gender = case_when(
-    gender == "M" ~ "Male",
-    gender == "F" ~ "Female",
-    TRUE ~ "Non-Binary"
-  ), trial_months =
-    (as.integer(SENTDATE) %/% 10000 - as.integer(OFFDATE) %/% 10000) * 12 +
-    as.integer(SENTDATE) %% 10000 %/% 100 - 
-    as.integer(OFFDATE) %% 10000 %/% 100) %>% 
-  group_by(race, gender) %>% 
-  summarise(
-    population = n(),
-    conviction_rate = sum(VERDICT == "GU")/n(),
-    avg_serve_months = mean(senmonth),
-    avg_trial_months = mean(trial_months)
-  ) %>% 
-  ungroup() 
-}
-```
-
-```{r felony_summary, message=FALSE}
-felony %>% 
-  basic_summary()
-```
-
-```{r misdemeanor_summary, message=FALSE}
-misdemeanor %>% 
-  basic_summary() 
-```
-
-```{r durham_felony, message=FALSE}
-durham %>% 
-  filter(chrgtype == 1) %>% 
-  basic_summary() 
-```
-
-```{r durham_misdemeanor, message=FALSE}
-durham %>% 
-  filter(chrgtype == 2) %>% 
-  basic_summary() 
+recent.five <- sentencing %>% 
+  filter(SENTDATE > "20150000")
 ```
 
 ```{r map_helper}
@@ -83,43 +39,95 @@ county_code$code <- map_chr(0:99, ~ case_when(
     TRUE ~ as.character(10 * .)
   ))
 
-map_summary <- function(x){
+map_summary <- function(x, d){
   v <- county_code %>% 
     filter(name == x) %>% 
     .[["code"]]
   
-  sentencing %>% 
+  d %>% 
     filter(COUNTY == v) %>% 
     summarise(
-      "Total Convicted" = as.character(sum(VERDICT == "GU")),
-      "Conviction Rate" = paste0(round(sum(VERDICT == "GU")/n() * 100, 2), "%"),
+      "Total Convicted" = as.character(n()),
+      "Guilty Pleas" = paste0(round(sum(newdisp == 1)/n() * 100, 2), "%"),
       "Felony Cases" = paste0(round(sum(chrgtype == 1)/n() * 100, 2), "%"),
       "Misdemeanor Cases" = paste0(round(sum(chrgtype == 2)/n() * 100, 2), "%"),
       White = paste0(round(sum(race == "W")/n() * 100, 2), "%"),
       Black = paste0(round(sum(race == "B")/n() * 100, 2), "%"),
       Hispanic = paste0(round(sum(race == "H")/n() * 100, 2), "%"),
       Asian = paste0(round(sum(race == "A")/n() * 100, 2), "%"),
-      Other = paste0(round(sum(race %in% c("O", "I", "U"))/n() * 100, 2), "%")
+      Other = paste0(round(sum(race %in% c("O", "U", "I"))/n() * 100, 2), "%")
     )
 }
 
-tooltip_output <- function(x){
-  v <- colnames(map_summary(x))
+tooltip_output <- function(x, d, f){
+  temp <- f(x, d)
+  
+  v <- colnames(temp)
   
   str_c(x, "\n", 
-        str_c(map_chr(v, ~ paste0(., ": ", map_summary(x)[[.]], "\n")), collapse = ""))
+        str_c(map_chr(v, ~ paste0(., ": ", temp[[.]], "\n")), 
+              collapse = ""))
 }
 ```
 
-```{r map}
+## North Carolina Sentencing Data
+
+```{r all_data_setting}
+dataf.1 <- sentencing
+
+# felony
+felony.1 <- dataf.1 %>% 
+  filter(chrgtype == 1)
+
+# misdemeanor
+misdemeanor.1 <- dataf.1 %>% 
+  filter(chrgtype == 2)
+
+# durham data
+durham.1 <- dataf.1 %>% 
+  filter(COUNTY == "310")
+```
+
+```{r all_general_map}
 nc_counties$descript <- nc_counties %>% 
   st_drop_geometry() %>% 
   .[["name"]] %>% 
-  sapply(., tooltip_output)
-  
-p_1 <- ggplot(nc_counties) +
-  geom_sf_interactive(aes(tooltip = descript)) +
-  theme_minimal()
+  sapply(., tooltip_output, d = dataf.1, f = map_summary)
+
+p_1 <- ggplot(nc_counties, aes(fill = name)) +
+  geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+  labs(subtitle = "1999 - 2019") +
+  theme_void(base_size = 14)
 
 girafe(ggobj = p_1)
+```
+
+```{r recent_data_setting}
+dataf.2 <- recent.five
+
+# felony
+felony.2 <- dataf.2 %>% 
+  filter(chrgtype == 1)
+
+# misdemeanor
+misdemeanor.2 <- dataf.2 %>% 
+  filter(chrgtype == 2)
+
+# durham data
+durham.2 <- dataf.2 %>% 
+  filter(COUNTY == "310")
+```
+
+```{r recent_general_map}
+nc_counties$descript <- nc_counties %>% 
+  st_drop_geometry() %>% 
+  .[["name"]] %>% 
+  sapply(., tooltip_output, d = dataf.2, f = map_summary)
+
+p_2 <- ggplot(nc_counties, aes(fill = name)) +
+  geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+  labs(subtitle = "2015 - 2019") +
+  theme_void(base_size = 14)
+
+girafe(ggobj = p_2)
 ```
