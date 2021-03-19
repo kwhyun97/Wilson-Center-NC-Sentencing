@@ -5,10 +5,121 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE}
+library(tidyverse)
+library(sf)
+library(janitor)
+library(ggiraph)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r data_cleaning, include=FALSE}
 source("data_cleaning.R")
+```
+
+```{r basic_helpers}
+basic_summary <- function(x){
+  x %>% 
+  mutate(race = case_when(
+    race == "A" ~ "Asian",
+    race == "B" ~ "Black",
+    race == "H" ~ "Hispanic",
+    race == "W" ~ "White",
+    TRUE ~ "Other"
+  ), gender = case_when(
+    gender == "M" ~ "Male",
+    gender == "F" ~ "Female",
+    TRUE ~ "Non-Binary"
+  ), trial_months =
+    (as.integer(SENTDATE) %/% 10000 - as.integer(OFFDATE) %/% 10000) * 12 +
+    as.integer(SENTDATE) %% 10000 %/% 100 - 
+    as.integer(OFFDATE) %% 10000 %/% 100) %>% 
+  group_by(race, gender) %>% 
+  summarise(
+    population = n(),
+    conviction_rate = sum(VERDICT == "GU")/n(),
+    avg_serve_months = mean(senmonth),
+    avg_trial_months = mean(trial_months)
+  ) %>% 
+  ungroup() 
+}
+```
+
+```{r felony_summary, message=FALSE}
+felony %>% 
+  basic_summary()
+```
+
+```{r misdemeanor_summary, message=FALSE}
+misdemeanor %>% 
+  basic_summary() 
+```
+
+```{r durham_felony, message=FALSE}
+durham %>% 
+  filter(chrgtype == 1) %>% 
+  basic_summary() 
+```
+
+```{r durham_misdemeanor, message=FALSE}
+durham %>% 
+  filter(chrgtype == 2) %>% 
+  basic_summary() 
+```
+
+```{r map_helper}
+nc_counties <- st_read(system.file("shape/nc.shp", package = "sf"), 
+                       quiet = T) %>% 
+  clean_names()
+
+county_code <- nc_counties %>% 
+  st_drop_geometry() %>% 
+  arrange(name) %>%
+  select(name) 
+  
+county_code$code <- map_chr(0:99, ~ case_when(
+    . == 0 ~ "000",
+    . < 10 ~ str_c("0", as.character(10 * .)),
+    TRUE ~ as.character(10 * .)
+  ))
+
+map_summary <- function(x){
+  v <- county_code %>% 
+    filter(name == x) %>% 
+    .[["code"]]
+  
+  sentencing %>% 
+    filter(COUNTY == v) %>% 
+    summarise(
+      "Total Convicted" = as.character(sum(VERDICT == "GU")),
+      "Conviction Rate" = paste0(round(sum(VERDICT == "GU")/n() * 100, 2), "%"),
+      "Felony Cases" = paste0(round(sum(chrgtype == 1)/n() * 100, 2), "%"),
+      "Misdemeanor Cases" = paste0(round(sum(chrgtype == 2)/n() * 100, 2), "%"),
+      White = paste0(round(sum(race == "W")/n() * 100, 2), "%"),
+      Black = paste0(round(sum(race == "B")/n() * 100, 2), "%"),
+      Hispanic = paste0(round(sum(race == "H")/n() * 100, 2), "%"),
+      Asian = paste0(round(sum(race == "A")/n() * 100, 2), "%"),
+      Other = paste0(round(sum(race %in% c("O", "I", "U"))/n() * 100, 2), "%")
+    )
+}
+
+tooltip_output <- function(x){
+  v <- colnames(map_summary(x))
+  
+  str_c(x, "\n", 
+        str_c(map_chr(v, ~ paste0(., ": ", map_summary(x)[[.]], "\n")), collapse = ""))
+}
+```
+
+```{r map}
+nc_counties$descript <- nc_counties %>% 
+  st_drop_geometry() %>% 
+  .[["name"]] %>% 
+  sapply(., tooltip_output)
+  
+p_1 <- ggplot(nc_counties) +
+  geom_sf_interactive(aes(tooltip = descript)) +
+  theme_minimal()
+
+girafe(ggobj = p_1)
 ```
