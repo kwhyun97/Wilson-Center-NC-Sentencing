@@ -131,3 +131,222 @@ p_2 <- ggplot(nc_counties, aes(fill = name)) +
 
 girafe(ggobj = p_2)
 ```
+
+```{r chi_sq_setting}
+by_county_chi <- function(county, a, b){
+  code <- county_code %>% 
+    filter(name == county) %>% 
+    .[[2]]
+  
+  a <- a %>% 
+    filter(County == county) %>% 
+    select(-1)
+  
+  b <- b %>% 
+    filter(COUNTY == code) %>% 
+    select(-1)
+  
+  chi_sq <- (a$White - b$White)^2 + (a$Asian-b$Asian)^2 + (a$Black-b$Black)^2 + 
+    (a$Native - b$Native)^2
+  
+  tibble(county = county, chi_sq = chi_sq)
+}
+
+chi_sq_builder <- function(year){
+  pop1 <- readRDS(str_c("data/population/", year, ".RDS")) 
+  colnames(pop1) <- c(colnames(pop1)[1], "Native", "Asian", "Black", "Two", 
+                      "White", "Total")
+  pop_s <- pop1 %>% 
+    mutate(
+      White = White / Total,
+      Asian = Asian / Total,
+      Black = Black / Total,
+      Native = Native / Total
+    ) %>% 
+    select(County, White, Asian, Black, Native)
+  
+  sent_s <- sentencing %>% 
+    filter(substr(SENTDATE, 1, 4) == as.character(year)) %>% 
+    group_by(COUNTY) %>% 
+    summarise(
+      White = sum(race == "W")/n(),
+      Asian = sum(race == "A")/n(),
+      Black = sum(race == "B")/n(),
+      Native = sum(race == "I")/n()
+    ) %>% 
+    ungroup()
+  
+  map_df(county_code[[1]], by_county_chi, a = pop_s, b = sent_s)
+}
+
+```
+
+```{r chi_sq_2000}
+chi.sq.2000 <- chi_sq_builder(2000)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2000") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2001}
+chi.sq.2000 <- chi_sq_builder(2001)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2001") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2002}
+chi.sq.2000 <- chi_sq_builder(2002)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2002") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2003}
+chi.sq.2000 <- chi_sq_builder(2003)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2003") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2004}
+chi.sq.2000 <- chi_sq_builder(2004)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2004") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2005}
+chi.sq.2000 <- chi_sq_builder(2005)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2005") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2006}
+chi.sq.2000 <- chi_sq_builder(2006)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2006") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2007}
+chi.sq.2000 <- chi_sq_builder(2007)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2007") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2008}
+chi.sq.2000 <- chi_sq_builder(2008)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2008") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
+
+```{r chi_sq_2009}
+chi.sq.2000 <- chi_sq_builder(2009)
+
+nc_counties.2000 <- nc_counties %>% 
+    arrange(name) %>% 
+    mutate(chi.sq = chi.sq.2000[[2]],
+         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+
+p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+    geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
+    scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
+    labs(subtitle = "2009") +
+    theme_void(base_size = 14)
+
+girafe(ggobj = p_chi)
+```
