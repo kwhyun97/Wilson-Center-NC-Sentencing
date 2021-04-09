@@ -182,170 +182,190 @@ chi_sq_builder <- function(year){
 ```
 
 ```{r chi_sq_2000}
-chi.sq.2000 <- chi_sq_builder(2000)
+chi.sq.a <- chi_sq_builder(2000)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2000") +
+    labs(title = "Year 2000", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2001}
-chi.sq.2000 <- chi_sq_builder(2001)
+chi.sq.a <- chi_sq_builder(2001)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2001") +
+    labs(title = "Year 2001", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2002}
-chi.sq.2000 <- chi_sq_builder(2002)
+chi.sq.a <- chi_sq_builder(2002)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2002") +
+    labs(title = "Year 2002", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2003}
-chi.sq.2000 <- chi_sq_builder(2003)
+chi.sq.a <- chi_sq_builder(2003)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2003") +
+    labs(title = "Year 2003", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2004}
-chi.sq.2000 <- chi_sq_builder(2004)
+chi.sq.a <- chi_sq_builder(2004)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2004") +
+    labs(title = "Year 2004", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2005}
-chi.sq.2000 <- chi_sq_builder(2005)
+chi.sq.a <- chi_sq_builder(2005)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2005") +
+    labs(title = "Year 2005", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2006}
-chi.sq.2000 <- chi_sq_builder(2006)
+chi.sq.a <- chi_sq_builder(2006)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2006") +
+    labs(title = "Year 2006", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2007}
-chi.sq.2000 <- chi_sq_builder(2007)
+chi.sq.a <- chi_sq_builder(2007)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2007") +
+    labs(title = "Year 2007", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2008}
-chi.sq.2000 <- chi_sq_builder(2008)
+chi.sq.a <- chi_sq_builder(2008)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2008") +
+    labs(title = "Year 2008", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
 ```
 
 ```{r chi_sq_2009}
-chi.sq.2000 <- chi_sq_builder(2009)
+chi.sq.a <- chi_sq_builder(2009)
 
-nc_counties.2000 <- nc_counties %>% 
+nc_counties.a <- nc_counties %>% 
     arrange(name) %>% 
-    mutate(chi.sq = chi.sq.2000[[2]],
-         descript = str_c(name, "\n p-value: ", pchisq(chi.sq, 3)))
+    mutate(chi.sq = chi.sq.a[[2]],
+         descript = str_c(name, "\n p-value: ", round(pchisq(chi.sq, 3), 
+                                                      digits = 3)))
 
-p_chi <- ggplot(nc_counties.2000, aes(fill = chi.sq)) +
+p_chi <- ggplot(nc_counties.a, aes(fill = chi.sq)) +
     geom_sf_interactive(aes(tooltip = descript), show.legend = FALSE) +
     scale_fill_gradient(high = "#ffeda0", low = "#f03b20") +
-    labs(subtitle = "2009") +
+    labs(title = "Year 2009", 
+         subtitle = "Racial Disproportionality in Convictions") +
     theme_void(base_size = 14)
 
 girafe(ggobj = p_chi)
